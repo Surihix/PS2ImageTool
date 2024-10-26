@@ -62,6 +62,7 @@ namespace PS2ImageTool
                             if (BppNumUpDown.Value == 4)
                             {
                                 pixBuffer = ImageHelpers.ConvertPixelsTo8Bpp(File.ReadAllBytes(pixelFile));
+                                CurrentPixelData = pixBuffer;
                             }
                             else
                             {
