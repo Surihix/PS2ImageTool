@@ -6,15 +6,15 @@ namespace PS2ImageTool
     {
         public static byte[] ConvertPixelsTo8Bpp(byte[] pixelsBufferVar)
         {
-            using (MemoryStream pixels4bpp = new MemoryStream())
+            using (var pixels4bpp = new MemoryStream())
             {
                 pixels4bpp.Write(pixelsBufferVar, 0, pixelsBufferVar.Length);
 
-                using (MemoryStream convertedPixelData = new MemoryStream())
+                using (var convertedPixelData = new MemoryStream())
                 {
-                    using (BinaryWriter convertedPixelDataWriter = new BinaryWriter(convertedPixelData))
+                    using (var convertedPixelDataWriter = new BinaryWriter(convertedPixelData))
                     {
-                        using (BinaryReader pixels4bppReader = new BinaryReader(pixels4bpp))
+                        using (var pixels4bppReader = new BinaryReader(pixels4bpp))
                         {
                             uint readPos = 0;
                             byte pixelBits;
@@ -48,9 +48,9 @@ namespace PS2ImageTool
 
         public static void DDS(string outImgPath, uint width, uint height, BinaryReader pixelReader, BinaryReader paletteReader)
         {
-            using (FileStream ddsFile = new FileStream(outImgPath, FileMode.Append, FileAccess.Write))
+            using (var ddsFile = new FileStream(outImgPath, FileMode.Append, FileAccess.Write))
             {
-                using (BinaryWriter ddsFileWriter = new BinaryWriter(ddsFile))
+                using (var ddsFileWriter = new BinaryWriter(ddsFile))
                 {
                     ddsFileWriter.BaseHeader(height, width, 1);
                     ddsFileWriter.PixelFormatHeader(DDSImageHelpers.PixelFormat.R8G8B8A8, width, height, 1);
@@ -100,7 +100,7 @@ namespace PS2ImageTool
             byte alpha = 0;
             Color pixelColor;
 
-            using (Bitmap finalImg = new Bitmap((int)width, (int)height))
+            using (var finalImg = new Bitmap((int)width, (int)height))
             {
                 for (int y = 0; y < height; y++)
                 {

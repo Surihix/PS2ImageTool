@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             TabControl = new TabControl();
             ImageTabPage = new TabPage();
             ImgOptionsGrpBox = new GroupBox();
@@ -37,7 +38,7 @@
             BppNumUpDown = new NumericUpDown();
             HeightNumUpDown = new NumericUpDown();
             WidthNumUpDown = new NumericUpDown();
-            MakeImgBtn = new Button();
+            CreateImgBtn = new Button();
             SwizzleTabPage = new TabPage();
             SwizzleOptionsGrpBox = new GroupBox();
             PixelOptionsGrpBox = new GroupBox();
@@ -51,6 +52,9 @@
             PalUnswizzleRadioBtn = new RadioButton();
             PixUnswizzleRadioBtn = new RadioButton();
             PicBox = new PictureBox();
+            PicBoxContextMenu = new ContextMenuStrip(components);
+            saveImageToolStripMenuItem = new ToolStripMenuItem();
+            PictureBoxPanel = new Panel();
             TabControl.SuspendLayout();
             ImageTabPage.SuspendLayout();
             ImgOptionsGrpBox.SuspendLayout();
@@ -64,6 +68,8 @@
             ((System.ComponentModel.ISupportInitialize)SwizzHeightNumUpDown).BeginInit();
             ((System.ComponentModel.ISupportInitialize)SwizzBppNumUpDown).BeginInit();
             ((System.ComponentModel.ISupportInitialize)PicBox).BeginInit();
+            PicBoxContextMenu.SuspendLayout();
+            PictureBoxPanel.SuspendLayout();
             SuspendLayout();
             // 
             // TabControl
@@ -80,7 +86,7 @@
             // 
             ImageTabPage.BackColor = SystemColors.Menu;
             ImageTabPage.Controls.Add(ImgOptionsGrpBox);
-            ImageTabPage.Controls.Add(MakeImgBtn);
+            ImageTabPage.Controls.Add(CreateImgBtn);
             ImageTabPage.Location = new Point(4, 24);
             ImageTabPage.Name = "ImageTabPage";
             ImageTabPage.Padding = new Padding(3);
@@ -133,13 +139,17 @@
             // BppNumUpDown
             // 
             BppNumUpDown.Location = new Point(15, 94);
+            BppNumUpDown.Maximum = new decimal(new int[] { 8, 0, 0, 0 });
+            BppNumUpDown.Minimum = new decimal(new int[] { 4, 0, 0, 0 });
             BppNumUpDown.Name = "BppNumUpDown";
             BppNumUpDown.Size = new Size(60, 23);
             BppNumUpDown.TabIndex = 0;
+            BppNumUpDown.Value = new decimal(new int[] { 4, 0, 0, 0 });
             // 
             // HeightNumUpDown
             // 
             HeightNumUpDown.Location = new Point(113, 40);
+            HeightNumUpDown.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             HeightNumUpDown.Name = "HeightNumUpDown";
             HeightNumUpDown.Size = new Size(60, 23);
             HeightNumUpDown.TabIndex = 0;
@@ -147,19 +157,20 @@
             // WidthNumUpDown
             // 
             WidthNumUpDown.Location = new Point(15, 40);
+            WidthNumUpDown.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             WidthNumUpDown.Name = "WidthNumUpDown";
             WidthNumUpDown.Size = new Size(60, 23);
             WidthNumUpDown.TabIndex = 0;
             // 
-            // MakeImgBtn
+            // CreateImgBtn
             // 
-            MakeImgBtn.Location = new Point(271, 68);
-            MakeImgBtn.Name = "MakeImgBtn";
-            MakeImgBtn.Size = new Size(90, 40);
-            MakeImgBtn.TabIndex = 0;
-            MakeImgBtn.Text = "Make Image";
-            MakeImgBtn.UseVisualStyleBackColor = true;
-            MakeImgBtn.Click += MakeImgBtn_Click;
+            CreateImgBtn.Location = new Point(271, 68);
+            CreateImgBtn.Name = "CreateImgBtn";
+            CreateImgBtn.Size = new Size(90, 40);
+            CreateImgBtn.TabIndex = 0;
+            CreateImgBtn.Text = "Create Image";
+            CreateImgBtn.UseVisualStyleBackColor = true;
+            CreateImgBtn.Click += CreateImgBtn_Click;
             // 
             // SwizzleTabPage
             // 
@@ -212,6 +223,7 @@
             // SwizzWidthNumUpDown
             // 
             SwizzWidthNumUpDown.Location = new Point(18, 37);
+            SwizzWidthNumUpDown.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             SwizzWidthNumUpDown.Name = "SwizzWidthNumUpDown";
             SwizzWidthNumUpDown.Size = new Size(60, 23);
             SwizzWidthNumUpDown.TabIndex = 0;
@@ -228,6 +240,7 @@
             // SwizzHeightNumUpDown
             // 
             SwizzHeightNumUpDown.Location = new Point(96, 37);
+            SwizzHeightNumUpDown.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             SwizzHeightNumUpDown.Name = "SwizzHeightNumUpDown";
             SwizzHeightNumUpDown.Size = new Size(60, 23);
             SwizzHeightNumUpDown.TabIndex = 0;
@@ -244,9 +257,12 @@
             // SwizzBppNumUpDown
             // 
             SwizzBppNumUpDown.Location = new Point(18, 81);
+            SwizzBppNumUpDown.Maximum = new decimal(new int[] { 8, 0, 0, 0 });
+            SwizzBppNumUpDown.Minimum = new decimal(new int[] { 4, 0, 0, 0 });
             SwizzBppNumUpDown.Name = "SwizzBppNumUpDown";
             SwizzBppNumUpDown.Size = new Size(60, 23);
             SwizzBppNumUpDown.TabIndex = 0;
+            SwizzBppNumUpDown.Value = new decimal(new int[] { 4, 0, 0, 0 });
             // 
             // UnswizzleBtn
             // 
@@ -284,20 +300,43 @@
             // 
             // PicBox
             // 
-            PicBox.Location = new Point(12, 12);
+            PicBox.Dock = DockStyle.Fill;
+            PicBox.Location = new Point(0, 0);
             PicBox.Name = "PicBox";
             PicBox.Size = new Size(424, 256);
+            PicBox.SizeMode = PictureBoxSizeMode.CenterImage;
             PicBox.TabIndex = 1;
             PicBox.TabStop = false;
+            // 
+            // PicBoxContextMenu
+            // 
+            PicBoxContextMenu.Items.AddRange(new ToolStripItem[] { saveImageToolStripMenuItem });
+            PicBoxContextMenu.Name = "contextMenuStrip1";
+            PicBoxContextMenu.Size = new Size(160, 26);
+            // 
+            // saveImageToolStripMenuItem
+            // 
+            saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
+            saveImageToolStripMenuItem.Size = new Size(159, 22);
+            saveImageToolStripMenuItem.Text = "Save Image As...";
+            saveImageToolStripMenuItem.Click += saveImageToolStripMenuItem_Click;
+            // 
+            // PictureBoxPanel
+            // 
+            PictureBoxPanel.Controls.Add(PicBox);
+            PictureBoxPanel.Location = new Point(12, 12);
+            PictureBoxPanel.Name = "PictureBoxPanel";
+            PictureBoxPanel.Size = new Size(424, 256);
+            PictureBoxPanel.TabIndex = 0;
             // 
             // CoreForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(448, 526);
-            Controls.Add(PicBox);
+            Controls.Add(PictureBoxPanel);
             Controls.Add(TabControl);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "CoreForm";
             Text = "PS2ImageTool";
@@ -317,6 +356,8 @@
             ((System.ComponentModel.ISupportInitialize)SwizzHeightNumUpDown).EndInit();
             ((System.ComponentModel.ISupportInitialize)SwizzBppNumUpDown).EndInit();
             ((System.ComponentModel.ISupportInitialize)PicBox).EndInit();
+            PicBoxContextMenu.ResumeLayout(false);
+            PictureBoxPanel.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -327,7 +368,7 @@
         private TabPage SwizzleTabPage;
         private PictureBox PicBox;
         private GroupBox ImgOptionsGrpBox;
-        private Button MakeImgBtn;
+        private Button CreateImgBtn;
         private Label BppLabel;
         private Label HeightLabel;
         private Label WidthLabel;
@@ -345,5 +386,8 @@
         private NumericUpDown SwizzHeightNumUpDown;
         private NumericUpDown SwizzWidthNumUpDown;
         private GroupBox PixelOptionsGrpBox;
+        private ContextMenuStrip PicBoxContextMenu;
+        private ToolStripMenuItem saveImageToolStripMenuItem;
+        private Panel PictureBoxPanel;
     }
 }
