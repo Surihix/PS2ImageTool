@@ -304,7 +304,7 @@
             PicBox.Location = new Point(0, 0);
             PicBox.Name = "PicBox";
             PicBox.Size = new Size(424, 256);
-            PicBox.SizeMode = PictureBoxSizeMode.CenterImage;
+            PicBox.SizeMode = PictureBoxSizeMode.Zoom;
             PicBox.TabIndex = 1;
             PicBox.TabStop = false;
             // 
