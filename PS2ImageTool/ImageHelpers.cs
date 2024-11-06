@@ -4,11 +4,11 @@ namespace PS2ImageTool
 {
     internal class ImageHelpers
     {
-        public static byte[] ConvertPixelsTo8Bpp(byte[] pixelsBufferVar)
+        public static byte[] ConvertPixelsTo8Bpp(byte[] pixelsBuffer)
         {
             using (var pixels4bpp = new MemoryStream())
             {
-                pixels4bpp.Write(pixelsBufferVar, 0, pixelsBufferVar.Length);
+                pixels4bpp.Write(pixelsBuffer, 0, pixelsBuffer.Length);
 
                 using (var convertedPixelData = new MemoryStream())
                 {
@@ -37,8 +37,7 @@ namespace PS2ImageTool
                                 writePos += 2;
                             }
 
-                            byte[] convertedPixelsVar = convertedPixelData.ToArray();
-                            return convertedPixelsVar;
+                            return convertedPixelData.ToArray();
                         }
                     }
                 }
@@ -46,7 +45,7 @@ namespace PS2ImageTool
         }
 
 
-        public static void DDS(string outImgPath, uint width, uint height, BinaryReader pixelReader, BinaryReader paletteReader)
+        public static void DDS(string outImgPath, uint width, uint height, BinaryReader pixelReader, BinaryReader paletteReader, bool alphaClamp)
         {
             using (var ddsFile = new FileStream(outImgPath, FileMode.Append, FileAccess.Write))
             {
@@ -70,7 +69,7 @@ namespace PS2ImageTool
                         getPalettePos = pixelReader.ReadByte();
                         palettePos = getPalettePos * 4;
 
-                        ReadColorValues(paletteReader, palettePos, ref red, ref green, ref blue, ref alpha);
+                        ReadColorValues(paletteReader, palettePos, ref red, ref green, ref blue, ref alpha, alphaClamp);
 
                         ddsFileWriter.BaseStream.Position = writePos;
                         ddsFileWriter.Write(blue);
@@ -86,7 +85,7 @@ namespace PS2ImageTool
         }
 
 
-        public static void DrawOnPicBox(uint width, uint height, BinaryReader pixelReader, BinaryReader paletteReader, MemoryStream pngStream)
+        public static void DrawOnPicBox(uint width, uint height, BinaryReader pixelReader, BinaryReader paletteReader, MemoryStream pngStream, bool alphaClamp)
         {
             pixelReader.BaseStream.Seek(0, SeekOrigin.Begin);
             paletteReader.BaseStream.Seek(0, SeekOrigin.Begin);
@@ -111,7 +110,7 @@ namespace PS2ImageTool
                         getPalettePos = pixelReader.ReadByte();
 
                         palettePos = getPalettePos * 4;
-                        ReadColorValues(paletteReader, palettePos, ref red, ref green, ref blue, ref alpha);
+                        ReadColorValues(paletteReader, palettePos, ref red, ref green, ref blue, ref alpha, alphaClamp);
 
                         pixelColor = Color.FromArgb(alpha, red, green, blue);
                         finalImg.SetPixel(x, y, pixelColor);
@@ -123,17 +122,17 @@ namespace PS2ImageTool
         }
 
 
-        private static void ReadColorValues(BinaryReader paletteReaderVar, uint readPos, ref byte redVar, ref byte greenVar, ref byte blueVar, ref byte alphaVar)
+        private static void ReadColorValues(BinaryReader paletteReader, uint readPos, ref byte red, ref byte green, ref byte blue, ref byte alpha, bool alphaClamp)
         {
-            paletteReaderVar.BaseStream.Position = readPos;
-            redVar = paletteReaderVar.ReadByte();
-            greenVar = paletteReaderVar.ReadByte();
-            blueVar = paletteReaderVar.ReadByte();
-            alphaVar = paletteReaderVar.ReadByte();
+            paletteReader.BaseStream.Position = readPos;
+            red = paletteReader.ReadByte();
+            green = paletteReader.ReadByte();
+            blue = paletteReader.ReadByte();
+            alpha = paletteReader.ReadByte();
 
-            if (alphaVar > 128)
+            if (alpha > 128 && alphaClamp)
             {
-                alphaVar = 128;
+                alpha = 128;
             }
         }
     }

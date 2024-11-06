@@ -11,6 +11,7 @@ namespace PS2ImageTool
         private static byte[]? CurrentPaletteData { get; set; }
         private static uint CurrentWidth { get; set; }
         private static uint CurrentHeight { get; set; }
+        private static bool AlphaClamp { get; set; }
 
         private void CreateImgBtn_Click(object sender, EventArgs e)
         {
@@ -59,6 +60,17 @@ namespace PS2ImageTool
                         {
                             byte[] pixBuffer;
 
+                            var alphaClampResult = MessageBox.Show("Would you like to clamp the alpha color level to 128?", "Clamp Alpha?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                            if (alphaClampResult == DialogResult.Yes)
+                            {
+                                AlphaClamp = true;
+                            }
+                            else
+                            {
+                                AlphaClamp = false;
+                            }
+
                             if (BppNumUpDown.Value == 4)
                             {
                                 pixBuffer = ImageHelpers.ConvertPixelsTo8Bpp(File.ReadAllBytes(pixelFile));
@@ -83,7 +95,7 @@ namespace PS2ImageTool
                                     {
                                         using (var pngStream = new MemoryStream())
                                         {
-                                            ImageHelpers.DrawOnPicBox(width, height, pixelReader, paletteReader, pngStream);
+                                            ImageHelpers.DrawOnPicBox(width, height, pixelReader, paletteReader, pngStream, AlphaClamp);
                                             PicBox.Image = Image.FromStream(pngStream);
                                         }
 
@@ -148,7 +160,7 @@ namespace PS2ImageTool
                                     {
                                         using (var palReader = new BinaryReader(palStream))
                                         {
-                                            ImageHelpers.DDS(filePath, CurrentWidth, CurrentHeight, pixReader, palReader);
+                                            ImageHelpers.DDS(filePath, CurrentWidth, CurrentHeight, pixReader, palReader, AlphaClamp);
                                         }
                                     }
                                 }
