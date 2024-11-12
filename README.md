@@ -21,8 +21,8 @@ Sometimes PS2 pixel data can be swizzled and would have to be unswizzled for the
 - Click on the Unswizzle button and you will be prompted to select the pixel file. this file should contain only the pixel data and has to be for a 8bpp image.
 - Select the pixel file that you have saved as a separate file and the tool should quickly unswizzle the file and save the data to a new file. this new file will have the same name as the file that you had selected, but will have a "_unswizzled" suffix added to the filename.
 
-### Creating the image
-- When you have your pixel and palette data files, go to the Image tools tab and enter the dimensions and the bpp values for your image. these values requires some guess work from your end and if the image doesn't look correct on the canvas, then then try a different set of values. 
+## Creating the image
+- When you have your pixel and palette data files, go to the Image tools tab and enter the dimensions and the bpp values for your image. these values requires some guess work from your end and if the image doesn't look correct on the canvas, then then try a different set of values.
 - After you have set the correct values, click on the "Create Image" button and you will be prompted to select the pixel file. this file should contain only the pixel data and if you had unswizzled the file before in the previous unswizzling step, then select the "_unswizzled" file.
 - Select the pixel file and you will be prompted to select the palette file. this file should contain only the palette data and should be in RGBA color order.
 - Select the palette file and you will be prompted as to whether you want to clamp the alpha values to 128. on a PS2, the max alpha range for a image is limited to a byte value of 128 and well if this was consistent, then clamping the alpha value automatically would have been a no brainer. but sometimes the image files would use the alpha values above 128 in different ways with the shader, thereby making the clamped image result look different compared to the image result that is rendered ingame. in this case, selecting the option to not clamp the value would provide the correct image result.
@@ -36,5 +36,4 @@ Sometimes PS2 pixel data can be swizzled and would have to be unswizzled for the
 
 
 # Credits
-- Mugi for helping with providing a palette unswizzle algorithm
-- Some user on Xentax forums for providing a C based code for the pixel unswizzle algorithm
+[**Mugi**](https://github.com/tehmugi) - for providing a C based code for the palette unswizzle algorithm.
